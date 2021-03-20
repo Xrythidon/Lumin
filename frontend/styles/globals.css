@@ -26,3 +26,9 @@ h3 {
 .rating span {
   margin: 0.1rem;
 }
+
+.link {
+  cursor: pointer;
+  background-color: red !important;
+
+}

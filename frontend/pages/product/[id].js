@@ -1,10 +1,11 @@
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
+import ProductScreen from "../../screens/ProductScreen";
 
 const Product = () => {
-  const router = useRouter()
-  const { id } = router.query
+  const router = useRouter();
+  const { id } = router.query;
 
-  return <p>Post: {id}</p>
-}
+  return <ProductScreen id={id} />;
+};
 
-export default Product
+export default Product;

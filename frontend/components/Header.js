@@ -1,5 +1,6 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
+import Link from "next/link";
 
 const Header = () => {
   return (
@@ -7,12 +8,22 @@ const Header = () => {
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
         <Container>
           {" "}
-          <Navbar.Brand href="/">Lumin</Navbar.Brand>
+          <Link href="/" passHref>
+            <Navbar.Brand >Lumin</Navbar.Brand>
+          </Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
-              <Nav.Link href="#home"><i className="fas fa-shopping-cart"/> Cart</Nav.Link>
-              <Nav.Link href="#link"><i className="fas fa-user"/> Sign In</Nav.Link>
+            <Link href="/cart" passHref>
+              <Nav.Link>
+                <i className="fas fa-shopping-cart" /> Cart
+              </Nav.Link>
+              </Link>
+              <Link href="/login" passHref>
+              <Nav.Link>
+                <i className="fas fa-user" /> Sign In
+              </Nav.Link>
+              </Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
