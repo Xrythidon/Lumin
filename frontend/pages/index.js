@@ -1,10 +1,18 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { Container } from "react-bootstrap";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import HomeScreen from "../screens/HomeScreen";
 
 export default function Home() {
   return (
-   <div>
-     Hellooo
-   </div>
-  )
+    <>
+      <Header />
+      <main className="py-3">
+        <Container>
+        <HomeScreen/>
+        </Container>
+      </main>
+      <Footer />
+    </>
+  );
 }
