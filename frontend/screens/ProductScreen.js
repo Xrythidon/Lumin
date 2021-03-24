@@ -1,11 +1,21 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Rating from "../components/Rating"
-import products from "../API/products";
 import { Col, Container, ListGroup, Row, Image, Card, Button } from "react-bootstrap";
 import Link from "next/link";
+import axios from "axios";
 
 const ProductScreen = ({ id }) => {
-  const product = products.find((p) => p._id === id);
+  const [product, setProduct] = useState({});
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      console.log(id)
+      const {data} = await axios.get(`/api/products/${id}`);
+      setProduct(data)
+    }
+
+    fetchProduct();
+  }, [id])
 
   return (
     id ? (
@@ -45,7 +55,7 @@ const ProductScreen = ({ id }) => {
                                 Price:
                               </Col>
                               <Col>
-                                <string>${product.price}</string>
+                                ${product.price}
                               </Col>
                           </Row>
                       </ListGroup.Item>
