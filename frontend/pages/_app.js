@@ -8,6 +8,7 @@ import store from "../redux/store";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
+
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
