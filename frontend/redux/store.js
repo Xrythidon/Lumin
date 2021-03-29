@@ -17,6 +17,7 @@ const reducer = combineReducers({
 
 
 let cartItemsFromStorage = []
+let userInfoFromStorage = null;
 
 if (typeof window !== 'undefined') {
     cartItemsFromStorage = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
