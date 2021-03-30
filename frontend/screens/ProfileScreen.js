@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { getUserDetails, updateUserProfile } from "../redux/actions/user";
+import { getUserDetails, updateUserProfile, resetUserProfile} from "../redux/actions/user";
 
 const ProfileScreen = ({ redirect }) => {
   const [name, setName] = useState("");
@@ -30,14 +30,15 @@ const ProfileScreen = ({ redirect }) => {
     if (!userInfo) {
       router.push("/login");
     } else {
-      if (!user.name) {
+      if (!user.name || success) {
+        dispatch(resetUserProfile());
         dispatch(getUserDetails("profile"));
       } else {
         setName(user.name);
         setEmail(user.email);
       }
     }
-  }, [dispatch, router, userInfo, user]);
+  }, [dispatch, router, userInfo, user, success]);
 
   const submitHandler = (e) => {
     e.preventDefault();
