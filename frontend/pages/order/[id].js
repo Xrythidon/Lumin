@@ -1,8 +1,8 @@
 import {useEffect} from "react";
 import { useRouter } from "next/router";
-import CartScreen from "../../screens/CartScreen";
+import OrderScreen from "../../screens/OrderScreen";
 
-const Cart = ({id, qty}) => {
+const Order = ({id, qty}) => {
   const router = useRouter();
   //const { id } = router.query;
 
@@ -12,7 +12,7 @@ const Cart = ({id, qty}) => {
 
   
     
-  return ( id && <CartScreen id={id} qty={qty}/>);
+  return ( id && <OrderScreen id={id}/>);
 };
 
 export async function getServerSideProps(ctx) {
@@ -21,11 +21,10 @@ export async function getServerSideProps(ctx) {
   return {
     props: {
       id,
-      qty
     },
   };
 }
 
-export default Cart;
+export default Order;
 
 

@@ -33,7 +33,7 @@ const INITIAL_ORDER_DETAILS_STATE = {
   orderItems: [],
   shippingAddress: {},
   error: null,
-  loading: null,
+  loading: true,
 };
 
 export const orderDetailsReducer = (state = INITIAL_ORDER_DETAILS_STATE, action) => {
