@@ -45,7 +45,7 @@ export const orderCreateReducer = (state = INITIAL_ORDER_STATE, action) => {
 };
 
 const INITIAL_ORDER_DETAILS_STATE = {
-  orderItems: [],
+  order: {},
   shippingAddress: {},
   error: null,
   loading: true,
@@ -60,11 +60,13 @@ export const orderDetailsReducer = (state = INITIAL_ORDER_DETAILS_STATE, action)
       };
     case ORDER_DETAILS_SUCCESS:
       return {
+        ...state,
         loading: false,
         order: action.payload,
       };
     case ORDER_DETAILS_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload,
       };

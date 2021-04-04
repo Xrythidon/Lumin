@@ -8,17 +8,17 @@ import Link from "next/link";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { getOrderDetails, payOrder, payReset } from "../redux/actions/order";
-const OrderScreen = ({ id }) => {
+const OrderScreen = ({ id,}) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
   const [sdkReady, setSdkReady] = useState(false);
 
-  const orderDetails = useSelector((state) => state.orderDetails);
-  const { order, loading, error } = orderDetails;
-
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
+
+  const orderDetails = useSelector((state) => state.orderDetails);
+  const { order, loading, error } = orderDetails;
 
   if (!loading) {
     // Calculate prices

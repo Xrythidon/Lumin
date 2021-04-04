@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Order from "../models/orderModel.js";
+import lodash from "lodash";
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -36,7 +37,15 @@ const addOrderItems = asyncHandler(async (req, res) => {
 const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id).populate("user", "name email")
 
-  if (order) {
+  // Cross Authorization
+  if(!lodash.isEqual(order.user._id, req.user._id) && !req.user.isAdmin) {
+    console.log(order.user._id, req.user._id)
+    res.status(401)
+    console.log("Check")
+    throw new Error("Not authorized. Not accessible by user")
+  }
+
+  else if (order) {
     res.json(order)
   } else {
     res.status(404)

@@ -10,14 +10,14 @@ const Order = ({id, qty}) => {
 
   },[])
 
+
   
     
-  return ( id && <OrderScreen id={id}/>);
+  return ( id && (<OrderScreen id={id}/> ));
 };
 
 export async function getServerSideProps(ctx) {
   const { id, qty } = ctx.query;
-
   return {
     props: {
       id,
