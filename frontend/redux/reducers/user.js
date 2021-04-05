@@ -14,6 +14,10 @@ import {
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_RESET,
   USER_DETAILS_RESET,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
+  USER_LIST_RESET,
 } from "../types/user";
 
 const INITIAL_LOGIN_STATE = {
@@ -71,7 +75,7 @@ export const userDetailsReducer = (state = INITIAL_DETAILS_STATE, action) => {
     case USER_DETAILS_FAIL:
       return { ...state, loading: false, error: action.payload };
     case USER_DETAILS_RESET:
-      return INITIAL_DETAILS_STATE
+      return INITIAL_DETAILS_STATE;
     default:
       return state;
   }
@@ -91,9 +95,30 @@ export const userUpdateProfileReducer = (state = INITIAL_UPDATE_PROFILE_STATE, a
     case USER_UPDATE_PROFILE_SUCCESS:
       return { ...state, loading: false, success: true, user: action.payload };
     case USER_UPDATE_PROFILE_FAIL:
-      return { ...state, loading: false, success: false,  error: action.payload };
+      return { ...state, loading: false, success: false, error: action.payload };
     case USER_UPDATE_PROFILE_RESET:
-        return {}
+      return {};
+    default:
+      return state;
+  }
+};
+
+const INITIAL_USER_LIST_STATE = {
+  users: [],
+  error: null,
+  loading: null,
+};
+
+export const userListReducer = (state = INITIAL_USER_LIST_STATE, action) => {
+  switch (action.type) {
+    case USER_LIST_REQUEST:
+      return { ...state, loading: true };
+    case USER_LIST_SUCCESS:
+      return { ...state, loading: false, users: action.payload };
+    case USER_LIST_FAIL:
+      return { ...state, loading: false, error: action.payload };
+    case USER_LIST_RESET:
+      return INITIAL_USER_LIST_STATE;
     default:
       return state;
   }
