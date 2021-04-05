@@ -18,6 +18,9 @@ import {
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
   USER_LIST_RESET,
+  USER_DELETE_REQUEST,
+  USER_DELETE_SUCCESS,
+  USER_DELETE_FAIL,
 } from "../types/user";
 
 const INITIAL_LOGIN_STATE = {
@@ -119,6 +122,25 @@ export const userListReducer = (state = INITIAL_USER_LIST_STATE, action) => {
       return { ...state, loading: false, error: action.payload };
     case USER_LIST_RESET:
       return INITIAL_USER_LIST_STATE;
+    default:
+      return state;
+  }
+};
+
+const INITIAL_USER_DELETE_STATE = {
+  success: false,
+  error: null,
+  loading: null,
+};
+
+export const userDeleteReducer = (state = INITIAL_USER_DELETE_STATE, action) => {
+  switch (action.type) {
+    case USER_DELETE_REQUEST:
+      return { ...state, loading: true };
+    case USER_DELETE_SUCCESS:
+      return { ...state, loading: false, success: true };
+    case USER_DELETE_FAIL:
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }
