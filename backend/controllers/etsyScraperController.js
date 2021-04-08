@@ -19,6 +19,10 @@ const scrapeAllProducts = asyncHandler(async (req, res) => {
   const parentContainerDiv = dom.querySelector(".featured-listings");
   const elements = parentContainerDiv.querySelectorAll("a");
 
+
+
+
+
   elements.forEach((element, index) => {
     const productUrl = element.getAttribute("href");
     axios
@@ -66,50 +70,47 @@ const testScrape = (req, res) => {
     const dom = new JSDOM(response.body.toString()).window.document;
     const parentContainerDiv = dom.querySelector(".featured-listings");
     const elements = parentContainerDiv.querySelectorAll("a");
-
-    elements.forEach((element) => {
-      const productUrl = element.getAttribute("href");
-
+    const products = [];
 
       const c = new Crawler({
         jQuery: jsdom,
-        rateLimit: 5000,
+        rateLimit: 2000,
         maxConnections: 1,
         callback: function (error, res, done) {
           if (error) {
             console.log(error);
           } else {
-            const dom = new JSDOM(res.body.toString()).window.document;
-            console.log(dom.querySelector("h1").innerHTML);
+            const pageDom = new JSDOM(res.body.toString()).window.document;
+            let product = {};
+            product.title = pageDom.querySelector("h1[data-buy-box-listing-title]").textContent.trim();
+            const picture = pageDom.querySelector("ul[data-carousel-pane-list]");
+            const pictureArray = picture.querySelectorAll("img");
+            const productImageArray = [];
+            pictureArray.forEach((pic) => {
+              pic.getAttribute("src")
+                ? productImageArray.push(pic.getAttribute("src"))
+                : productImageArray.push(pic.getAttribute("data-src"));
+            });
+            product.images = productImageArray;
+            console.log(product);
+            products.push(product);
           }
           done();
         },
       });
 
+      
 
-
-
-
-      got(productUrl)
-        .then((productPageData) => {
-          console.log("delay HERE");
-          const pageDom = new JSDOM(productPageData.body.toString()).window.document;
-          let product = {};
-          product.title = pageDom.querySelector("h1[data-buy-box-listing-title]").textContent.trim();
-          const picture = pageDom.querySelector("ul[data-carousel-pane-list]");
-          const pictureArray = picture.querySelectorAll("img");
-          const productImageArray = [];
-          pictureArray.forEach((pic) => {
-            pic.getAttribute("src")
-              ? productImageArray.push(pic.getAttribute("src"))
-              : productImageArray.push(pic.getAttribute("data-src"));
-          });
-          product.images = productImageArray;
-          console.log(product);
-        });
+      elements.forEach((element) => {
+        const productUrl = element.getAttribute("href");
+        c.queue(productUrl)
+  
     });
+    c.on('drain',function(){
+      // For example, release a connection to database.
+      res.json(products);
+  });
 
-    res.json("Hit");
   });
 };
 
@@ -140,28 +141,3 @@ const testCrawler = (req, res) => {
 
 export { scrapeAllProducts, testScrape, testCrawler };
 
-/*
-const scrapeAllProducts = asyncHandler(async (req, res) => {
-  const { data } = await axios.get(etsyUrl);
-
-  const products = [];
-
-  const dom = new JSDOM(data.toString()).window.document;
-  const parentContainerDiv = dom.querySelector(".featured-listings");
-  const elements = parentContainerDiv.querySelectorAll("a");
-
-  elements.forEach((element) => {
-    const product = {};
-
-    product.url = element.getAttribute("href")
-    product.title = element.querySelector("h3").innerHTML.trim()
-    product.img = element.querySelector("img").getAttribute("src")
-    product.price = parseInt(element.querySelector(".currency-value").innerHTML.trim());
-    product.currency = element.querySelector(".currency-symbol").innerHTML.trim()
-
-    products.push(product);
-  });
-
-  res.json(products);
-});
-*/
