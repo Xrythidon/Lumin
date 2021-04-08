@@ -1,4 +1,4 @@
-import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL } from "../types/product";
+import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL } from "../types/product";
 
 
 const INITIAL_LIST_STATE = {
@@ -35,6 +35,24 @@ export const productDetailsReducer = (state = INITIAL_DETAILS_STATE, action) => 
             return {...state, loading: false, product: action.payload}
         case PRODUCT_DETAILS_FAIL:
             return { ...state, loading: false, error: action.payload}
+        default: return state
+    }
+}
+
+const INITIAL_DELETE_STATE = {
+    success: false,
+    error: null,
+    loading: null
+}
+
+export const productDeleteReducer = (state = INITIAL_DELETE_STATE, action) => {
+    switch(action.type) {
+        case PRODUCT_DELETE_REQUEST:
+            return {...state, loading: true, success: false}
+        case PRODUCT_DELETE_SUCCESS:
+            return {...state, loading: false, success: true}
+        case PRODUCT_DELETE_FAIL:
+            return { ...state, loading: false, error: action.payload, success: false}
         default: return state
     }
 }

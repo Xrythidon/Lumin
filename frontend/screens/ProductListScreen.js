@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { listProducts } from "../redux/actions/product";
+import { deleteProduct, listProducts } from "../redux/actions/product";
 
 const ProductListScreen = ({}) => {
   const dispatch = useDispatch();
@@ -13,6 +13,9 @@ const ProductListScreen = ({}) => {
 
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
+
+  const productDelete = useSelector((state) => state.productDelete);
+  const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -23,18 +26,17 @@ const ProductListScreen = ({}) => {
     } else {
       router.push("/login");
     }
-  }, [dispatch, router, userInfo]);
+  }, [dispatch, router, userInfo, successDelete]);
 
   const deleteHandler = (id) => {
     if (window.confirm("Are you sure?")) {
-      //DELETE PRODUCTS
+      dispatch(deleteProduct(id))
     }
   };
 
   const createProductHandler = (product) => {
-      // CREATE PRODUCT
-
-  }
+    // CREATE PRODUCT
+  };
 
   return (
     <>
@@ -48,6 +50,8 @@ const ProductListScreen = ({}) => {
           </Button>
         </Col>
       </Row>
+      {loadingDelete && <Loader/>}
+      {errorDelete && <Message variant="danger">{errorDelete}</Message>}
       {loading ? (
         <Loader />
       ) : error ? (

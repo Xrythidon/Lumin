@@ -82,6 +82,7 @@ const testScrape = (req, res) => {
           } else {
             const pageDom = new JSDOM(res.body.toString()).window.document;
             let product = {};
+            product.url = res.options.uri;
             product.title = pageDom.querySelector("h1[data-buy-box-listing-title]").textContent.trim();
             const picture = pageDom.querySelector("ul[data-carousel-pane-list]");
             const pictureArray = picture.querySelectorAll("img");
@@ -99,11 +100,12 @@ const testScrape = (req, res) => {
         },
       });
 
-      
 
       elements.forEach((element) => {
         const productUrl = element.getAttribute("href");
-        c.queue(productUrl)
+        c.queue({
+          uri: productUrl
+      })
   
     });
     c.on('drain',function(){
