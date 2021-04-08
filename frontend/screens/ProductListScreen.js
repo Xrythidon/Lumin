@@ -26,17 +26,18 @@ const ProductListScreen = ({}) => {
   useEffect(() => {
     dispatch(createProductReset())
 
-    if (!userInfo.isAdmin) {
+    if ( !userInfo || !userInfo.isAdmin) {
       router.push("/login");
     } 
 
     if(successCreate){
-      router.push(`admin/product/${createdProduct._id}/edit`)
+        router.push(`/admin/product/${createdProduct._id}/edit`)
+
     } else {
       dispatch(listProducts());
     }
 
-  }, [dispatch, router, userInfo, successCreate, createdProduct]);
+  }, [dispatch, router, userInfo, successCreate,]);
 
   useEffect(() => {
     if(successDelete){
@@ -45,10 +46,10 @@ const ProductListScreen = ({}) => {
   }, [successDelete])
 
   const deleteHandler = (id) => {
-    if (window.confirm("Are you sure?")) {
+    //if (window.confirm("Are you sure?")) {
       dispatch(deleteProduct(id))
       dispatch(deleteProductReset());
-    }
+   // }
   };
 
   const createProductHandler = () => {
