@@ -14,7 +14,7 @@ import {
   userDeleteReducer,
   userUpdateReducer
 } from "./reducers/user";
-import { orderCreateReducer, orderDetailsReducer, orderMyListReducer, orderPayReducer } from "./reducers/order";
+import { orderCreateReducer, orderDetailsReducer, orderListReducer, orderMyListReducer, orderPayReducer } from "./reducers/order";
 
 const reducer = combineReducers({
   productList: productListReducer,
@@ -34,6 +34,7 @@ const reducer = combineReducers({
   orderDetails: orderDetailsReducer,
   orderPay: orderPayReducer,
   orderMyList: orderMyListReducer,
+  orderList: orderListReducer,
 });
 
 let cartItemsFromStorage = [];

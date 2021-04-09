@@ -34,7 +34,7 @@ const ProfileScreen = ({ redirect }) => {
     if (!userInfo) {
       router.push("/login");
     } else {
-      if (!user.name || success) {
+      if (!user.name || success || orders._id) {
         dispatch(resetUserProfile());
         dispatch(getUserDetails("profile"));
         dispatch(listMyOrders());
@@ -43,7 +43,9 @@ const ProfileScreen = ({ redirect }) => {
         setEmail(user.email);
       }
     }
-  }, [dispatch, router, userInfo, user, success]);
+  }, [dispatch, router, userInfo, user, success, orders]);
+
+
 
   const submitHandler = (e) => {
     e.preventDefault();

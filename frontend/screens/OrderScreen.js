@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { PayPalButton } from "react-paypal-button-v2";
-import {  Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { getOrderDetails, payOrder, payReset } from "../redux/actions/order";
-const OrderScreen = ({ id,}) => {
+import { getOrderDetails, payOrder, payReset, listMyOrders } from "../redux/actions/order";
+import { resetCart } from "../redux/actions/cart";
+const OrderScreen = ({ id }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -44,6 +45,7 @@ const OrderScreen = ({ id,}) => {
     if (!order || order._id !== id || successPay) {
       dispatch(payReset());
       dispatch(getOrderDetails(id));
+      dispatch(listMyOrders());
     } else if (!order.isPaid) {
       if (!window.paypal) {
         addPayPalScript();
@@ -54,9 +56,10 @@ const OrderScreen = ({ id,}) => {
   }, [dispatch, router, order, id, successPay]);
 
   const successPaymentHandler = (paymentResult) => {
-    dispatch(payOrder(id, paymentResult))
-
-  }
+    dispatch(payOrder(id, paymentResult));
+        // since user paid, clear cart
+        dispatch(resetCart());
+  };
 
   return loading ? (
     <Loader />
@@ -160,8 +163,10 @@ const OrderScreen = ({ id,}) => {
               </ListGroup.Item>
               {!order.isPaid && (
                 <ListGroup.Item>
-                  {loadingPay && "Loading..." }
-                  {!sdkReady ? "Loading..." : (
+                  {loadingPay && "Loading..."}
+                  {!sdkReady ? (
+                    "Loading..."
+                  ) : (
                     <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />
                   )}
                 </ListGroup.Item>

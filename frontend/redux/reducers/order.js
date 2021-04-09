@@ -13,6 +13,10 @@ import {
   ORDER_MY_LIST_SUCCESS,
   ORDER_MY_LIST_FAIL,
   ORDER_MY_LIST_RESET,
+  ORDER_LIST_REQUEST,
+  ORDER_LIST_SUCCESS,
+  ORDER_LIST_FAIL,
+  ORDER_LIST_RESET,
 } from "../types/order";
 
 const INITIAL_ORDER_STATE = {
@@ -134,6 +138,27 @@ export const orderMyListReducer = (state = INITIAL_MY_ORDERS_STATE, action) => {
       };
     case ORDER_MY_LIST_RESET:
       return INITIAL_MY_ORDERS_STATE;
+    default:
+      return state;
+  }
+};
+
+const INITIAL_ORDER_LIST_STATE = {
+  orders: [],
+  error: null,
+  loading: null,
+};
+
+export const orderListReducer = (state = INITIAL_ORDER_LIST_STATE, action) => {
+  switch (action.type) {
+    case ORDER_LIST_REQUEST:
+      return { ...state, loading: true };
+    case ORDER_LIST_SUCCESS:
+      return { ...state, loading: false, users: action.payload };
+    case ORDER_LIST_FAIL:
+      return { ...state, loading: false, error: action.payload };
+    case ORDER_LIST_RESET:
+      return INITIAL_ORDER_LIST_STATE;
     default:
       return state;
   }
