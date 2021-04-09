@@ -18,6 +18,7 @@ const ProductEditScreen = ({ id }) => {
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [uploadingError, setUploadingError] = useState("")
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -80,9 +81,11 @@ const ProductEditScreen = ({ id }) => {
       const { data } = await axios.post('/api/upload', formData, config)
 
       setImage(data)
+      setUploadingError("");
       setUploading(false)
     } catch (error) {
       console.error(error)
+      setUploadingError("Error uploading image. Images only")
       setUploading(false)
     }
   }
@@ -131,6 +134,7 @@ const ProductEditScreen = ({ id }) => {
               ></Form.Control>
               <Form.File id="image-file" label="Choose File" custom onChange={uploadFileHandler}></Form.File>
               {uploading && <Loader />}
+              {uploadingError && <Message variant="danger">{uploadingError}</Message>}
             </Form.Group>
 
             <Form.Group controller="brand">
