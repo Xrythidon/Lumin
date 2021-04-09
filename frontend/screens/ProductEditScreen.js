@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
-import { listProductDetails } from "../redux/actions/product";
+import { listProductDetails, updateProduct, updateProductReset } from "../redux/actions/product";
 
 const ProductEditScreen = ({ id }) => {
   const [name, setName] = useState("");
@@ -23,24 +23,42 @@ const ProductEditScreen = ({ id }) => {
   const productDetails = useSelector((state) => state.productDetails);
   const { user, error, product, loading } = productDetails;
 
-  useEffect(() => {
-    if (!product.name|| product._id !== id) {
-      dispatch(listProductDetails(id));
-    } else {
-      setName(product.name);
-      setPrice(product.price);
-      setImage(product.image);
-      setBrand(product.brand);
-      setCategory(product.category);
-      setCountInStock(product.countInStock);
-      setDescription(product.description);
+  const productUpdate = useSelector((state) => state.productUpdate);
+  const { success: successUpdate, error: errorUpdate, loading: loadingUpdate } = productUpdate;
 
+  useEffect(() => {
+    if (successUpdate) {
+      dispatch(updateProductReset());
+      dispatch(listProductDetails(id));
+      router.push("/admin/productlist");
+    } else {
+      if (!product.name || product._id !== id) {
+        dispatch(listProductDetails(id));
+      } else {
+        setName(product.name);
+        setPrice(product.price);
+        setImage(product.image);
+        setBrand(product.brand);
+        setCategory(product.category);
+        setCountInStock(product.countInStock);
+        setDescription(product.description);
+      }
     }
-  }, [dispatch, id, product]);
+  }, [dispatch, router, id, product, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    // UPDATE PRODUCT
+    dispatch(updateProduct({
+      _id: id,
+      name,
+      price,
+      image,
+      brand,
+      category,
+      description,
+      countInStock
+    }))
+
   };
 
   return (
@@ -50,6 +68,8 @@ const ProductEditScreen = ({ id }) => {
       </Link>
       <FormContainer>
         <h1>Edit Product</h1>
+        {loadingUpdate && <Loader />}
+        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (
@@ -115,7 +135,6 @@ const ProductEditScreen = ({ id }) => {
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>
             </Form.Group>
-
 
             <Button type="submit" variant="primary">
               Update

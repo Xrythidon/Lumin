@@ -13,6 +13,10 @@ import {
   PRODUCT_CREATE_FAIL,
   PRODUCT_CREATE_RESET,
   PRODUCT_DELETE_RESET,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
+  PRODUCT_UPDATE_RESET,
 } from "../types/product";
 
 const INITIAL_LIST_STATE = {
@@ -93,6 +97,28 @@ export const productCreateReducer = (state = INITIAL_CREATE_STATE, action) => {
       return { ...state, loading: false, error: action.payload, };
     case PRODUCT_CREATE_RESET:
       return INITIAL_CREATE_STATE;
+    default:
+      return state;
+  }
+};
+
+const INITIAL_UPDATE_STATE = {
+  product: {},
+  error: null,
+  loading: null,
+  success: false,
+};
+
+export const productUpdateReducer = (state = INITIAL_UPDATE_STATE, action) => {
+  switch (action.type) {
+    case PRODUCT_UPDATE_REQUEST:
+      return { ...state, loading: true, };
+    case PRODUCT_UPDATE_SUCCESS:
+      return { ...state, loading: false, product: action.payload, success: true };
+    case PRODUCT_UPDATE_FAIL:
+      return { ...state, loading: false, error: action.payload, };
+    case PRODUCT_UPDATE_RESET:
+      return INITIAL_UPDATE_STATE;
     default:
       return state;
   }
