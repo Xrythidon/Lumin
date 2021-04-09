@@ -17,17 +17,13 @@ const OrderListScreen = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-
-
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(listOrders());
     } else {
-        router.push("/login");
+      router.push("/login");
     }
-
   }, [dispatch, router, userInfo]);
-
 
   return (
     <>
@@ -54,15 +50,11 @@ const OrderListScreen = () => {
               <tr key={order._id}>
                 <td>{order._id}</td>
                 <td>{order.user && order.user.name}</td>
-                <td>
-                  {order.createdAt.substring(0, 10)}
-                </td>
-                <td>
-                  ${order.totalPrice}
-                </td>
+                <td>{order.createdAt.substring(0, 10)}</td>
+                <td>${order.totalPrice}</td>
                 <td>
                   {order.isPaid ? (
-                    order.paidAt.substring(0, 10)
+                    <p style={{ color: "green" }}> {order.paidAt.substring(0, 10)}</p>
                   ) : (
                     <i className="fas fa-times" style={{ color: "red" }} />
                   )}
@@ -75,7 +67,7 @@ const OrderListScreen = () => {
                   )}
                 </td>
                 <td>
-                  <Link href={`/admin/order/${order._id}/`}>
+                  <Link href={`/order/${order._id}/`}>
                     <Button variant="light" className="btn-sm">
                       Details
                     </Button>

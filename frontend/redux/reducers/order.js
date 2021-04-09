@@ -154,7 +154,7 @@ export const orderListReducer = (state = INITIAL_ORDER_LIST_STATE, action) => {
     case ORDER_LIST_REQUEST:
       return { ...state, loading: true };
     case ORDER_LIST_SUCCESS:
-      return { ...state, loading: false, users: action.payload };
+      return { ...state, loading: false, orders: action.payload };
     case ORDER_LIST_FAIL:
       return { ...state, loading: false, error: action.payload };
     case ORDER_LIST_RESET:

@@ -13,6 +13,9 @@ const OrderScreen = ({ id }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const userInfo = useSelector((state) => state.userLogin);
+ 
+
   const [sdkReady, setSdkReady] = useState(false);
 
   const orderPay = useSelector((state) => state.orderPay);
@@ -21,7 +24,14 @@ const OrderScreen = ({ id }) => {
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
-  if (!loading) {
+  useEffect(() => {
+    if(!userInfo.isAdmin || order.user._id !== userInfo._id ) {
+      router.push("/")
+    }
+
+  }, [userInfo, order, router])
+
+  if (!order) {
     // Calculate prices
     const addDecimals = (num) => {
       return (Math.round(num * 100) / 100).toFixed(2);
