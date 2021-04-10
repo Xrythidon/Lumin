@@ -61,7 +61,7 @@ const OrderListScreen = () => {
                 </td>
                 <td>
                   {order.isDelivered ? (
-                    order.deliveredAt.substring(0, 10)
+                    <p style={{ color: "green" }}> {order.deliveredAt.substring(0, 10)}</p>
                   ) : (
                     <i className="fas fa-times" style={{ color: "red" }} />
                   )}

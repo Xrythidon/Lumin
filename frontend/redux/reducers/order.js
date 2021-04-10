@@ -17,6 +17,10 @@ import {
   ORDER_LIST_SUCCESS,
   ORDER_LIST_FAIL,
   ORDER_LIST_RESET,
+  ORDER_DELIVER_REQUEST,
+  ORDER_DELIVER_SUCCESS,
+  ORDER_DELIVER_FAIL,
+  ORDER_DELIVER_RESET,
 } from "../types/order";
 
 const INITIAL_ORDER_STATE = {
@@ -106,6 +110,38 @@ export const orderPayReducer = (state = INITIAL_PAY_STATE, action) => {
       };
     case ORDER_PAY_RESET:
       return INITIAL_PAY_STATE;
+    default:
+      return state;
+  }
+};
+
+const INITIAL_DELIVER_STATE = {
+  success: false,
+  error: null,
+  loading: true,
+};
+
+export const orderDeliverReducer = (state = INITIAL_DELIVER_STATE, action) => {
+  switch (action.type) {
+    case ORDER_DELIVER_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case ORDER_DELIVER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+      };
+    case ORDER_DELIVER_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case ORDER_DELIVER_RESET:
+      return INITIAL_DELIVER_STATE;
     default:
       return state;
   }
