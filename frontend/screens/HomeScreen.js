@@ -8,15 +8,18 @@ import Loader from "../components/Loader";
 import {listProducts} from "../redux/actions/product";
 
 
-const HomeScreen = () => {
+const HomeScreen = ({keyword}) => {
+  
+  
+
   const dispatch = useDispatch();
   const productList = useSelector(state => state.productList)
   const {loading, error, products} = productList
 
-
+ 
   useEffect(() => {
-    dispatch(listProducts())
-  }, [dispatch])
+    dispatch(listProducts(keyword))
+  }, [dispatch, keyword])
 
 
 
