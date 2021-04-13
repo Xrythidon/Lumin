@@ -1,12 +1,12 @@
 import { Container } from "react-bootstrap";
 import HomeScreen from "../screens/HomeScreen";
 
-export default function Home({keyword}) {
+export default function Home({keyword, pageNumber}) {
   return (
     <>
       <main className="py-3">
         <Container>
-          <HomeScreen keyword={keyword} />
+          <HomeScreen keyword={keyword} pageNumber={pageNumber} />
         </Container>
       </main>
     </>
@@ -15,7 +15,7 @@ export default function Home({keyword}) {
 
 export async function getServerSideProps(ctx) {
 
-  const { keyword } = ctx.query;
+  const { keyword, page } = ctx.query;
 
   let filledKeyword = keyword;
 
@@ -26,6 +26,7 @@ export async function getServerSideProps(ctx) {
   return {
     props: {
       keyword: filledKeyword,
+      pageNumber: page || 1,
     },
   };
 }

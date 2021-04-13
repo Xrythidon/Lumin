@@ -1,20 +1,29 @@
 import React from 'react'
 import ProductListScreen from "../../../screens/ProductListScreen";
 
-const ProductList = () => {
+const ProductList = ({keyword, pageNumber}) => {
+    console.log(pageNumber);
     return (
-        <ProductListScreen/>
+        <ProductListScreen keyword={keyword} pageNumber={pageNumber}/>
     )
 }
 
 export default ProductList
 
-// export async function getServerSideProps(ctx) {
-//     const { id } = ctx.query;
-//     return {
-//       props: {
-//         id,
-//       },
-//     };
-//   }
+
+export async function getServerSideProps(ctx) {
+
+    const { keyword, page } = ctx.query;
   
+    let filledKeyword = keyword;
+    if(!keyword) {
+      filledKeyword = "";
+    }
+  
+    return {
+      props: {
+        keyword: filledKeyword,
+        pageNumber: page || 1,
+      },
+    };
+  }

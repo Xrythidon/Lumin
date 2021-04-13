@@ -25,6 +25,8 @@ import {
 
 const INITIAL_LIST_STATE = {
   products: [],
+  pages: null,
+  page: null,
   error: null,
   loading: null,
 };
@@ -34,7 +36,13 @@ export const productListReducer = (state = INITIAL_LIST_STATE, action) => {
     case PRODUCT_LIST_REQUEST:
       return { ...state, loading: true };
     case PRODUCT_LIST_SUCCESS:
-      return { ...state, loading: false, products: action.payload };
+      return {
+        ...state,
+        loading: false,
+        products: action.payload.products,
+        pages: action.payload.pages,
+        page: action.payload.page,
+      };
     case PRODUCT_LIST_FAIL:
       return { ...state, loading: false, error: action.payload };
     default:
@@ -76,9 +84,9 @@ export const productDeleteReducer = (state = INITIAL_DELETE_STATE, action) => {
     case PRODUCT_DELETE_SUCCESS:
       return { ...state, loading: false, success: true };
     case PRODUCT_DELETE_FAIL:
-      return { ...state, loading: false, error: action.payload};
+      return { ...state, loading: false, error: action.payload };
     case PRODUCT_DELETE_RESET:
-        return INITIAL_DELETE_STATE
+      return INITIAL_DELETE_STATE;
     default:
       return state;
   }
@@ -94,11 +102,11 @@ const INITIAL_CREATE_STATE = {
 export const productCreateReducer = (state = INITIAL_CREATE_STATE, action) => {
   switch (action.type) {
     case PRODUCT_CREATE_REQUEST:
-      return { ...state, loading: true, };
+      return { ...state, loading: true };
     case PRODUCT_CREATE_SUCCESS:
       return { ...state, loading: false, product: action.payload, success: true };
     case PRODUCT_CREATE_FAIL:
-      return { ...state, loading: false, error: action.payload, };
+      return { ...state, loading: false, error: action.payload };
     case PRODUCT_CREATE_RESET:
       return INITIAL_CREATE_STATE;
     default:
@@ -116,11 +124,11 @@ const INITIAL_UPDATE_STATE = {
 export const productUpdateReducer = (state = INITIAL_UPDATE_STATE, action) => {
   switch (action.type) {
     case PRODUCT_UPDATE_REQUEST:
-      return { ...state, loading: true, };
+      return { ...state, loading: true };
     case PRODUCT_UPDATE_SUCCESS:
       return { ...state, loading: false, product: action.payload, success: true };
     case PRODUCT_UPDATE_FAIL:
-      return { ...state, loading: false, error: action.payload, };
+      return { ...state, loading: false, error: action.payload };
     case PRODUCT_UPDATE_RESET:
       return INITIAL_UPDATE_STATE;
     default:
@@ -137,11 +145,11 @@ const INITIAL_PRODUCT_CREATE_REVIEW_STATE = {
 export const productCreateReviewReducer = (state = INITIAL_PRODUCT_CREATE_REVIEW_STATE, action) => {
   switch (action.type) {
     case PRODUCT_CREATE_REVIEW_REQUEST:
-      return { ...state, loading: true, };
+      return { ...state, loading: true };
     case PRODUCT_CREATE_REVIEW_SUCCESS:
       return { ...state, loading: false, success: true };
     case PRODUCT_CREATE_REVIEW_FAIL:
-      return { ...state, loading: false, error: action.payload, };
+      return { ...state, loading: false, error: action.payload };
     case PRODUCT_CREATE_REVIEW_RESET:
       return INITIAL_PRODUCT_CREATE_REVIEW_STATE;
     default:

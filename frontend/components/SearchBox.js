@@ -3,19 +3,28 @@ import { useRouter } from "next/router";
 import { Form, Button } from "react-bootstrap";
 
 const SearchBox = () => {
-    const router = useRouter();
+  const router = useRouter();
 
   const [keyword, setKeyword] = useState("");
 
   const submitHandler = (e) => {
-      e.preventDefault()
-      if(keyword.trim()){
-        router.push(`/?keyword=${keyword}`)
-      } else {
-          router.push("/")
-      }
+    e.preventDefault();
 
-  }
+    //ADMIN ROUTE
+    if (router.pathname.includes("productlist")) {
+      if (keyword.trim()) {
+        router.push(`/admin/productlist?keyword=${keyword}`);
+      } else {
+        router.push("/admin/productlist");
+      }
+    } else {
+      if (keyword.trim()) {
+        router.push(`/?keyword=${keyword}`);
+      } else {
+        router.push("/");
+      }
+    }
+  };
 
   return (
     <Form onSubmit={submitHandler} inline>
@@ -27,7 +36,7 @@ const SearchBox = () => {
         className="mr-sm-2 ml-sm-5"
       ></Form.Control>
       <Button type="submit" variant="outline-success" className="p-2">
-          Search
+        Search
       </Button>
     </Form>
   );
