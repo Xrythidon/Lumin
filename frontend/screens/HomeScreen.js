@@ -6,6 +6,7 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import Paginate from "../components/Paginate";
 import { listProducts } from "../redux/actions/product";
+import ProductCarousel from "../components/productCarousel";
 
 const HomeScreen = ({ keyword, pageNumber }) => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const HomeScreen = ({ keyword, pageNumber }) => {
 
   return (
     <>
+    {!keyword && <ProductCarousel/>}
       <h1>Latest Products</h1>
       {loading ? (
         <Loader />

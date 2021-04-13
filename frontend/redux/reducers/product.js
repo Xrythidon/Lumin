@@ -21,6 +21,9 @@ import {
   PRODUCT_CREATE_REVIEW_SUCCESS,
   PRODUCT_CREATE_REVIEW_FAIL,
   PRODUCT_CREATE_REVIEW_RESET,
+  PRODUCT_TOP_REQUEST,
+  PRODUCT_TOP_SUCCESS,
+  PRODUCT_TOP_FAIL,
 } from "../types/product";
 
 const INITIAL_LIST_STATE = {
@@ -156,3 +159,23 @@ export const productCreateReviewReducer = (state = INITIAL_PRODUCT_CREATE_REVIEW
       return state;
   }
 };
+
+const INITIAL_PRODUCT_TOP_STATE = {
+  error: null,
+  loading: null,
+  products: [],
+};
+
+export const productTopRatedReducer = (state = INITIAL_PRODUCT_TOP_STATE, action) => {
+  switch (action.type) {
+    case PRODUCT_TOP_REQUEST:
+      return { ...state, loading: true };
+    case PRODUCT_TOP_SUCCESS:
+      return { ...state, loading: false, products: action.payload };
+    case PRODUCT_TOP_FAIL:
+      return { ...state, loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+

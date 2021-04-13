@@ -46,7 +46,7 @@ const ProductListScreen = ({pageNumber, keyword}) => {
       console.log(keyword);
       dispatch(listProducts(keyword, pageNumber));
     }
-  }, [dispatch, router, userInfo, successCreate]);
+  }, [dispatch, router, userInfo, successCreate, pageNumber, keyword]);
 
   useEffect(() => {
     if (successDelete) {
@@ -55,10 +55,10 @@ const ProductListScreen = ({pageNumber, keyword}) => {
   }, [successDelete]);
 
   const deleteHandler = (id) => {
-    //if (window.confirm("Are you sure?")) {
+    if (window.confirm("Are you sure?")) {
     dispatch(deleteProduct(id));
     dispatch(deleteProductReset());
-    // }
+    }
   };
 
   const createProductHandler = () => {
