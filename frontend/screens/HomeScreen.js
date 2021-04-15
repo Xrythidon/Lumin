@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Head from 'next/head'
 import { useDispatch, useSelector } from "react-redux";
 import { Col, Row } from "react-bootstrap";
 import Product from "../components/Product";
@@ -7,6 +8,7 @@ import Loader from "../components/Loader";
 import Paginate from "../components/Paginate";
 import { listProducts } from "../redux/actions/product";
 import ProductCarousel from "../components/productCarousel";
+import Link from "next/link";
 
 const HomeScreen = ({ keyword, pageNumber }) => {
   const dispatch = useDispatch();
@@ -20,7 +22,7 @@ const HomeScreen = ({ keyword, pageNumber }) => {
 
   return (
     <>
-    {!keyword && <ProductCarousel/>}
+    {!keyword ? <ProductCarousel/> : <Link href="/" className="btn btn-light">Go Back</Link>}
       <h1>Latest Products</h1>
       {loading ? (
         <Loader />

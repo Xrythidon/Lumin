@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { listProductDetails, createProductReview, createProductReviewReset } from "../redux/actions/product";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import Meta from "../components/Meta";
 
 const ProductScreen = ({ id }) => {
   const [qty, setQty] = useState(1);
@@ -67,6 +68,7 @@ const ProductScreen = ({ id }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <>
+        <Meta title={product.name} />
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />

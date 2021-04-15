@@ -8,12 +8,14 @@ import store from "../redux/store";
 import dynamic from "next/dynamic";
 //import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Meta from "../components/Meta";
 
 const Header = dynamic(() => import("../components/Header"));
 
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
+      <Meta />
       {typeof window !== "undefined" && <Header />}
       <Component {...pageProps} />
       <Footer />
