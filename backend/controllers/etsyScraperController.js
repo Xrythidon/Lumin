@@ -138,7 +138,6 @@ const testCrawler = (req, res) => {
 // @route   get /api/scrape/review/:id
 // @access  Public
 const scrapeAllReviewsByProduct = asyncHandler(async (req, res) => {
-  
   const listing_id = req.params.id;
   const page = Number(req.query.page) || 1;
 
@@ -195,4 +194,30 @@ const scrapeAllReviewsByProduct = asyncHandler(async (req, res) => {
     });
 });
 
-export { scrapeAllProducts, testScrape, testCrawler, scrapeAllReviewsByProduct };
+// @desc    Get all etsy reviews by listingId sequentially
+// @route   get /api/scrape/getAllReviewsById
+// @access  Public
+const TEST_URL = "http://localhost:5000/api/scrape/reviews/675362615?page=1";
+const getAllReviewsById = (req, res) => {
+  axios.get(TEST_URL).then((response) => {
+    const dom = new JSDOM(response.data.toString()).window.document;
+
+    
+    const elements =  dom.querySelectorAll("div[data-reviews] div.wt-grid__item-xs-12")
+    const reviews = [];
+
+    elements.forEach((element) => {
+      let review = {};
+      review.name = element.querySelectorAll("a[data-review-username]")[0].textContent.trim()
+     // review.date = element.querySelectorAll("a[data-review-username]")[1].textContent.trim()
+      review.description = element.querySelector(".wt-text-body-01 p").textContent.trim() || "test";
+      review.profileImg = element.querySelector("img").getAttribute("src");
+      console.log(review);
+   //   reviews.push(review);
+    });
+
+
+  });
+};
+
+export { scrapeAllProducts, testScrape, testCrawler, scrapeAllReviewsByProduct, getAllReviewsById };
