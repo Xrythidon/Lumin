@@ -3,11 +3,13 @@ import mongoose from "mongoose";
 const reviewSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
-    rating: { type: Number, required: true },
-    comment: { type: String, required: true },
+    date: { type: String, required: true },
+    rating: { type: String, required: true },
+    description: { type: String, required: false },
+    profileImg: { type: String, required: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      required: false,
       ref: "User",
     },
   },

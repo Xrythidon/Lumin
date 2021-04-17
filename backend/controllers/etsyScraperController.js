@@ -233,7 +233,7 @@ const getAllReviewsById = (req, res) => {
     },
   });
 
-  const MAX_PAGE = 25;
+  const MAX_PAGE = 2;
   for (let page = 1; page < MAX_PAGE; page++) {
     const reviewUrl = `http://localhost:5000/api/scrape/reviews/675362615?page=${page}`;
     c.queue({
