@@ -68,6 +68,7 @@ const testScrape = (req, res) => {
     const elements = parentContainerDiv.querySelectorAll("a");
     const products = [];
 
+    //(?:"category": )"(.*?)"
     const c = new Crawler({
       jQuery: jsdom,
       rateLimit: 2000,
@@ -80,7 +81,9 @@ const testScrape = (req, res) => {
           let product = {};
           product.url = res.options.uri;
           product.title = pageDom.querySelector("h1[data-buy-box-listing-title]").textContent.trim();
+          product.description = pageDom.querySelector("p[data-product-details-description-text-content]").textContent.trim().split(/\s*\-\s*/g)[0];
           const picture = pageDom.querySelector("ul[data-carousel-pane-list]");
+          product.category = pageDom.querySelector("script[type='application/ld+json']").textContent.trim().split(/(?:"category": )"(.*?)"/g)[1];
           const pictureArray = picture.querySelectorAll("img");
           const productImageArray = [];
           pictureArray.forEach((pic) => {
@@ -96,11 +99,11 @@ const testScrape = (req, res) => {
       },
     });
 
-    elements.forEach((element) => {
-      const productUrl = element.getAttribute("href");
-      c.queue({
-        uri: productUrl,
-      });
+    // elements.forEach((element) => {
+    const productUrl = elements[0].getAttribute("href");
+    c.queue({
+      uri: productUrl,
+      //     });
     });
     c.on("drain", function () {
       // For example, release a connection to database.
@@ -197,45 +200,49 @@ const scrapeAllReviewsByProduct = asyncHandler(async (req, res) => {
 });
 
 // @desc    Get all etsy reviews by listingId sequentially
-// @route   get /api/scrape/getAllReviewsById
+// @route   get /api/scrape/reviews
 // @access  Public
-const getAllReviewsById = (req, res) => {
+const getAllReviewsById = (req, response) => {
   const reviews = [];
 
   const c = new Crawler({
     jQuery: jsdom,
-
     rateLimit: 1000,
     maxConnections: 1,
     callback: function (error, res, done) {
       if (error) {
         console.log(error);
       } else {
-
         const dom = new JSDOM(res.body.toString()).window.document;
-        if(res.body.toString()) {
-          console.log("PAGE: ", res.request.uri.query)
+        if (res.body.toString()) {
+          console.log("PAGE: ", res.request.uri.query);
           const elements = dom.querySelectorAll("div[data-reviews] div.wt-grid__item-xs-12");
           elements.forEach((element) => {
             let review = {};
-            review.name = element.querySelector("a[data-review-username]") ? element.querySelector("a[data-review-username]").textContent.trim() : "";
+            review.name = element.querySelector("a[data-review-username]")
+              ? element.querySelector("a[data-review-username]").textContent.trim()
+              : "";
             review.date = element.querySelector("p").textContent.trim().match(/(?:[0-9][0-9] [A-z]{3}, [0-9]{4})/gm)[0]; // prettier-ignore
-           // review.dispatchedTo =  element.querySelector("p").textContent.trim().match(/[(?:   Dispatched to:)](United States|Canada)/gm)[0] ? element.querySelector("p").textContent.trim().match(/[(?:   Dispatched to:)](United States|Canada)/gm)[0] : "N/A"; // prettier-ignore
+            // review.dispatchedTo =  element.querySelector("p").textContent.trim().match(/[(?:   Dispatched to:)](United States|Canada)/gm)[0] ? element.querySelector("p").textContent.trim().match(/[(?:   Dispatched to:)](United States|Canada)/gm)[0] : "N/A"; // prettier-ignore
             review.rating = element.querySelector("input[name]").getAttribute("value");
-            review.description = element.querySelector(".wt-text-body-01 p") ? element.querySelector(".wt-text-body-01 p").textContent.trim() : "";
+            review.description = element.querySelector(".wt-text-body-01 p")
+              ? element.querySelector(".wt-text-body-01 p").textContent.trim()
+              : "";
             review.profileImg = element.querySelector("img").getAttribute("src");
             console.log(review);
             reviews.push(review);
           });
-        } 
+        } else {
+          response.json(reviews);
+        }
       }
       done();
     },
   });
 
-  const MAX_PAGE = 2;
+  const MAX_PAGE = 20;
   for (let page = 1; page < MAX_PAGE; page++) {
-    const reviewUrl = `http://localhost:5000/api/scrape/reviews/675362615?page=${page}`;
+    const reviewUrl = `http://localhost:5000/api/scrape/reviews/971179890?page=${page}`;
     c.queue({
       uri: reviewUrl,
     });
@@ -243,7 +250,7 @@ const getAllReviewsById = (req, res) => {
 
   c.on("drain", function () {
     // For example, release a connection to database.
-    res.json(reviews);
+    response.json(reviews);
   });
 };
 
