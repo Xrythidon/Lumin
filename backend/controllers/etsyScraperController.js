@@ -61,11 +61,12 @@ const crawlHelper = (fn) => {
 // @desc    Scrape all etsy products
 // @route   get /api/scrape/test
 // @access  Public
-const testScrape = (req, res) => {
+const testScrape = (req, mainRes) => {
   got(etsyUrl).then((response) => {
     const dom = new JSDOM(response.body.toString()).window.document;
     const parentContainerDiv = dom.querySelector(".featured-listings");
-    const elements = parentContainerDiv.querySelectorAll("a");
+    let elements = parentContainerDiv.querySelectorAll("a");
+    elements = [elements[0], elements[1]];
     const products = [];
 
     //(?:"category": )"(.*?)"
@@ -80,10 +81,46 @@ const testScrape = (req, res) => {
           const pageDom = new JSDOM(res.body.toString()).window.document;
           let product = {};
           product.url = res.options.uri;
+          product.listingId = res.options.listingId;
           product.title = pageDom.querySelector("h1[data-buy-box-listing-title]").textContent.trim();
-          product.description = pageDom.querySelector("p[data-product-details-description-text-content]").textContent.trim().split(/\s*\-\s*/g)[0];
+          product.description = pageDom
+            .querySelector("p[data-product-details-description-text-content]")
+            .textContent.trim()
+            .split(/\s*\-\s*/g)[0];
           const picture = pageDom.querySelector("ul[data-carousel-pane-list]");
-          product.category = pageDom.querySelector("script[type='application/ld+json']").textContent.trim().split(/(?:"category": )"(.*?)"/g)[1];
+          product.category = pageDom
+            .querySelector("script[type='application/ld+json']")
+            .textContent.trim()
+            .split(/(?:"category": )"(.*?)"/g)[1];
+          product.priceCurrency = pageDom
+            .querySelector("script[type='application/ld+json']")
+            .textContent.trim()
+            .split(/(?:"priceCurrency": )"(.*?)"/g)[1];
+          product.lowPrice = Number(
+            pageDom
+              .querySelector("script[type='application/ld+json']")
+              .textContent.trim()
+              .split(/(?:"lowPrice": )"(.*?)"/g)[1]
+          );
+          product.highPrice = Number(
+            pageDom
+              .querySelector("script[type='application/ld+json']")
+              .textContent.trim()
+              .split(/(?:"highPrice": )"(.*?)"/g)[1]
+          );
+          //Sizes
+          let sizeArray = [];
+          pageDom.querySelectorAll("[data-buy-box-select='0'] option").forEach((element) => {
+            sizeArray.push(element.textContent.trim());
+          });
+          product.sizes = pageDom.querySelectorAll("[data-buy-box-select='0'] option") ? sizeArray : [];
+          //Metals
+          let metalArray = [];
+          pageDom.querySelectorAll("[data-buy-box-select='1'] option").forEach((element) => {
+            metalArray.push(element.textContent.trim());
+          });
+          product.metals = pageDom.querySelectorAll("[data-buy-box-select='1'] option") ? metalArray : [];
+
           const pictureArray = picture.querySelectorAll("img");
           const productImageArray = [];
           pictureArray.forEach((pic) => {
@@ -92,22 +129,38 @@ const testScrape = (req, res) => {
               : productImageArray.push(pic.getAttribute("data-src"));
           });
           product.images = productImageArray;
-          console.log(product);
-          products.push(product);
+
+          // Nested Request
+          axios
+            .get(`http://localhost:5000/api/scrape/reviews/${(res.options.listingId)}`)
+            .then((response) => {
+              product.reviews = response.data;
+              console.log(product);
+              console.log(res.options.index);
+              products.push(product);
+              if (res.options.index === elements.length - 1) {
+                // last index then res.json
+
+                mainRes.json(products);
+                console.log("last index");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         }
         done();
       },
     });
 
-    // elements.forEach((element) => {
-    const productUrl = elements[0].getAttribute("href");
-    c.queue({
-      uri: productUrl,
-      //     });
-    });
-    c.on("drain", function () {
-      // For example, release a connection to database.
-      res.json(products);
+    elements.forEach((element, index) => {
+      // const index = 0;
+      const productUrl = element.getAttribute("href");
+      c.queue({
+        uri: productUrl,
+        listingId: productUrl.match(/\/[0-9]*?\//gm)[1].split("/")[1],
+        index: index,
+      });
     });
   });
 };
@@ -138,9 +191,9 @@ const testCrawler = (req, res) => {
 };
 
 // @desc    Scrape all reviews by etsy product
-// @route   get /api/scrape/review/:id
+// @route   get /api/scrape/parseReviews/:id
 // @access  Public
-const scrapeAllReviewsByProduct = asyncHandler(async (req, res) => {
+const reviewParserById = asyncHandler(async (req, res) => {
   const listing_id = req.params.id;
   const page = Number(req.query.page);
 
@@ -202,8 +255,9 @@ const scrapeAllReviewsByProduct = asyncHandler(async (req, res) => {
 // @desc    Get all etsy reviews by listingId sequentially
 // @route   get /api/scrape/reviews
 // @access  Public
-const getAllReviewsById = (req, response) => {
+const getAllReviewsByListingId = (req, response) => {
   const reviews = [];
+  const listing_id = req.params.id;
 
   const c = new Crawler({
     jQuery: jsdom,
@@ -240,9 +294,9 @@ const getAllReviewsById = (req, response) => {
     },
   });
 
-  const MAX_PAGE = 20;
+  const MAX_PAGE = 3;
   for (let page = 1; page < MAX_PAGE; page++) {
-    const reviewUrl = `http://localhost:5000/api/scrape/reviews/971179890?page=${page}`;
+    const reviewUrl = `http://localhost:5000/api/scrape/parseReviews/${listing_id}?page=${page}`;
     c.queue({
       uri: reviewUrl,
     });
@@ -254,4 +308,4 @@ const getAllReviewsById = (req, response) => {
   });
 };
 
-export { scrapeAllProducts, testScrape, testCrawler, scrapeAllReviewsByProduct, getAllReviewsById };
+export { scrapeAllProducts, testScrape, testCrawler, reviewParserById, getAllReviewsByListingId };

@@ -25,16 +25,21 @@ const productSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    name: {
+    url: {
       type: String,
       required: true,
     },
-    image: {
+    listingId: {
       type: String,
       required: true,
     },
-    brand: {
+
+    title: {
       type: String,
+      required: true,
+    },
+    images: {
+      type: [String],
       required: true,
     },
     category: {
@@ -45,6 +50,27 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    priceCurrency: {
+      type: String,
+      default: "CAD",
+      required: true,
+    },
+    lowPrice: {
+      type: Number,
+      required: true,
+    },
+    highPrice: {
+      type: Number,
+      required: true,
+    },
+    sizes: {
+      type: [String],
+      required: false,
+    },
+    metals: {
+      type: [String],
+      required: false,
+    },
     reviews: [reviewSchema],
     rating: {
       type: Number,
@@ -52,11 +78,6 @@ const productSchema = mongoose.Schema(
       default: 0,
     },
     numReviews: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    price: {
       type: Number,
       required: true,
       default: 0,
