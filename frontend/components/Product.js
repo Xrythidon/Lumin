@@ -9,7 +9,7 @@ const Product = ({ product }) => {
     <Card className="my-3 p-3 rounded">
       <Link href={`/product/${product._id}`}>
         <a>
-          <Card.Img src={product.image} variant="top" />
+          <Card.Img src={product.images[0]} variant="top" />
         </a>
       </Link>
 
@@ -17,7 +17,7 @@ const Product = ({ product }) => {
         <Link href={`/product/${product._id}`}>
           <a>
             <Card.Title as="div">
-              <strong>{product.name}</strong>
+              <strong>{product.title}</strong>
             </Card.Title>
           </a>
         </Link>
@@ -29,7 +29,7 @@ const Product = ({ product }) => {
           />
         </Card.Text>
 
-        <Card.Text as="h3">${product.price}</Card.Text>
+        <Card.Text as="h3">${product.lowPrice}</Card.Text>
       </Card.Body>
     </Card>
   );

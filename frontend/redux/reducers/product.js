@@ -56,6 +56,7 @@ export const productListReducer = (state = INITIAL_LIST_STATE, action) => {
 const INITIAL_DETAILS_STATE = {
   product: {
     reviews: [],
+    images: [],
   },
   error: null,
   loading: null,

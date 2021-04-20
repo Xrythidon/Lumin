@@ -68,20 +68,20 @@ const ProductScreen = ({ id }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <>
-        <Meta title={product.name} />
+        <Meta title={product.title} />
           <Row>
             <Col md={6}>
-              <Image src={product.image} alt={product.name} fluid />
+              <Image src={product.images[0]} alt={product.name} fluid />
             </Col>
             <Col md={3}>
               <ListGroup variant="flush">
                 <ListGroup.Item>
-                  <h2>{product.name}</h2>
+                  <h2>{product.title}</h2>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Rating value={product.rating} text={`${product.numReviews} reviews`} />
                 </ListGroup.Item>
-                <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+                <ListGroup.Item>Price: ${product.lowPrice}</ListGroup.Item>
                 <ListGroup.Item>Description: ${product.description}</ListGroup.Item>
               </ListGroup>
             </Col>
@@ -91,7 +91,7 @@ const ProductScreen = ({ id }) => {
                   <ListGroup.Item>
                     <Row>
                       <Col>Price:</Col>
-                      <Col>${product.price}</Col>
+                      <Col>${product.lowPrice}</Col>
                     </Row>
                   </ListGroup.Item>
 
