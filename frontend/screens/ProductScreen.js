@@ -142,6 +142,7 @@ const ProductScreen = ({ id }) => {
                   <ListGroup.Item key={review._id}>
                     <strong>{review.name}</strong>
                     <Rating value={review.rating} />
+                    <Image src={review.profileImg} alt={review.name} fluid />
                     <p>{review.date}</p>
                     <p>{review.description}</p>
                   </ListGroup.Item>

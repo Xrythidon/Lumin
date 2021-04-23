@@ -27,7 +27,7 @@ const importData = async () => {
       let totalReviewsAdded = 0;
 
       product.reviews.forEach((review) => {
-        totalReviewsAdded += review.rating;
+        totalReviewsAdded += Number(review.rating);
       });
 
       return {
@@ -39,8 +39,8 @@ const importData = async () => {
           rating: Number(review.rating),
           user: adminUser,
         })),
-        numReviews: product.reviews.length,
-        avgRating: totalReviewsAdded / product.reviews.length,
+        numReviews: Number(product.reviews.length),
+        avgRating: Number(totalReviewsAdded / Number(product.reviews.length)),
       };
     });
 

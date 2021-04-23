@@ -6,7 +6,7 @@ import Crawler from "crawler";
 import jsdom from "jsdom";
 const { JSDOM } = jsdom;
 
-const etsyUrl = "https://www.etsy.com/ca/shop/shopluminjewelry";
+const etsyUrl = "https://www.etsy.com/shop/shopluminjewelry";
 
 // @desc    Scrape all etsy products
 // @route   get /api/scrape
@@ -62,13 +62,11 @@ const crawlHelper = (fn) => {
 // @route   get /api/scrape/test
 // @access  Public
 const testScrape = (req, mainRes) => {
-  got(etsyUrl).then((response) => {
-    const dom = new JSDOM(response.body.toString()).window.document;
-    const parentContainerDiv = dom.querySelector(".featured-listings");
-    let elements = parentContainerDiv.querySelectorAll("a");
-    elements = [elements[0], elements[1]];
-    const products = [];
+  axios.get("http://localhost:5000/api/scrape/getAllEtsyProducts").then((response) => {
+    let elements = response.data;
+    // elements = [elements[0], elements[1]];
 
+    const products = [];
     //(?:"category": )"(.*?)"
     const c = new Crawler({
       jQuery: jsdom,
@@ -132,7 +130,7 @@ const testScrape = (req, mainRes) => {
 
           // Nested Request
           axios
-            .get(`http://localhost:5000/api/scrape/reviews/${(res.options.listingId)}`)
+            .get(`http://localhost:5000/api/scrape/reviews/${res.options.listingId}`)
             .then((response) => {
               product.reviews = response.data;
               console.log(product);
@@ -155,13 +153,48 @@ const testScrape = (req, mainRes) => {
 
     elements.forEach((element, index) => {
       // const index = 0;
-      const productUrl = element.getAttribute("href");
+      const productUrl = element;
       c.queue({
         uri: productUrl,
         listingId: productUrl.match(/\/[0-9]*?\//gm)[1].split("/")[1],
         index: index,
       });
     });
+  });
+};
+
+// @desc    Scrape all etsy products Urls
+// @route   get /api/scrape/getAllEtsyProducts
+// @access  Public
+const getAllEtsyProducts = (req, res) => {
+  const links = [];
+
+  const c = new Crawler({
+    jQuery: jsdom,
+    rateLimit: 3000,
+    maxConnections: 1,
+    callback: function (error, res, done) {
+      if (error) {
+        console.log(error);
+      } else {
+        const dom = new JSDOM(res.body.toString()).window.document;
+        const pageDom = dom.querySelector("div[data-listings-container]");
+        const linkURLs = pageDom.querySelectorAll(".listing-link");
+
+        linkURLs.forEach((link) => {
+          links.push(link.getAttribute("href"));
+        });
+      }
+      done();
+    },
+  });
+
+  for (let i = 1; i <= 1; i++) {
+    c.queue(`${etsyUrl}?page=${i}`);
+  }
+
+  c.on("drain", function () {
+    res.json(links);
   });
 };
 
@@ -197,6 +230,8 @@ const reviewParserById = asyncHandler(async (req, res) => {
   const listing_id = req.params.id;
   const page = Number(req.query.page);
 
+  const Relevancy = "Relevancy";
+  const Recency = "Recency";
   const data = qs.stringify({
     "specs[reviews][0]": " Listzilla_ApiSpecs_Reviews",
     "specs[reviews][1][listing_id]": ` ${listing_id}`,
@@ -213,7 +248,7 @@ const reviewParserById = asyncHandler(async (req, res) => {
     "specs[reviews][1][is_external_landing]": " false",
     "specs[reviews][1][is_reviews_untabbed_cached]": " false",
     "specs[reviews][1][search_query]": " ",
-    "specs[reviews][1][sort_option]": " Relevancy",
+    "specs[reviews][1][sort_option]": ` ${Recency}`,
   });
   const config = {
     method: "post",
@@ -258,6 +293,7 @@ const reviewParserById = asyncHandler(async (req, res) => {
 const getAllReviewsByListingId = (req, response) => {
   const reviews = [];
   const listing_id = req.params.id;
+  let noMoreReviewsLeft = false;
 
   const c = new Crawler({
     jQuery: jsdom,
@@ -277,7 +313,6 @@ const getAllReviewsByListingId = (req, response) => {
               ? element.querySelector("a[data-review-username]").textContent.trim()
               : "";
             review.date = element.querySelector("p").textContent.trim().match(/(?:[0-9][0-9] [A-z]{3}, [0-9]{4})/gm)[0]; // prettier-ignore
-            // review.dispatchedTo =  element.querySelector("p").textContent.trim().match(/[(?:   Dispatched to:)](United States|Canada)/gm)[0] ? element.querySelector("p").textContent.trim().match(/[(?:   Dispatched to:)](United States|Canada)/gm)[0] : "N/A"; // prettier-ignore
             review.rating = element.querySelector("input[name]").getAttribute("value");
             review.description = element.querySelector(".wt-text-body-01 p")
               ? element.querySelector(".wt-text-body-01 p").textContent.trim()
@@ -287,25 +322,33 @@ const getAllReviewsByListingId = (req, response) => {
             reviews.push(review);
           });
         } else {
+          console.log("INSIDE ELSE");
+        //  noMoreReviewsLeft = true;
           response.json(reviews);
+          return;
         }
       }
       done();
     },
   });
 
-  const MAX_PAGE = 3;
+  const MAX_PAGE = 5;
   for (let page = 1; page < MAX_PAGE; page++) {
     const reviewUrl = `http://localhost:5000/api/scrape/parseReviews/${listing_id}?page=${page}`;
     c.queue({
       uri: reviewUrl,
     });
+    console.log(page);
   }
+  // RINGER SIZER ETSY BUG, REVIEWS ARE DUPLICATED AFTER THE TOTAL AMOUNT OF REVIEWS EXCEEDED
 
-  c.on("drain", function () {
-    // For example, release a connection to database.
-    response.json(reviews);
-  });
+//   c.on("drain", function () {
+//     // For example, release a connection to database.
+//     console.log("INSIDE DRAIN");
+//  //   if(noMoreReviewsLeft) {
+//  //     response.json(reviews);
+//   //  }
+//   });
 };
 
-export { scrapeAllProducts, testScrape, testCrawler, reviewParserById, getAllReviewsByListingId };
+export { scrapeAllProducts, testScrape, testCrawler, reviewParserById, getAllReviewsByListingId, getAllEtsyProducts };
