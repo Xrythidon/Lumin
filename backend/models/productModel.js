@@ -9,7 +9,7 @@ const reviewSchema = mongoose.Schema(
     profileImg: { type: String, required: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      required: false,
+      required: true,
       ref: "User",
     },
   },
@@ -72,7 +72,7 @@ const productSchema = mongoose.Schema(
       required: false,
     },
     reviews: [reviewSchema],
-    rating: {
+    avgRating: {
       type: Number,
       required: true,
       default: 0,

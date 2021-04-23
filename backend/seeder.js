@@ -24,9 +24,21 @@ const importData = async () => {
     const adminUser = createdUsers[0]._id;
 
     const sampleProducts = products.map((product) => {
+      let totalReviewsAdded = 0;
+
+      product.reviews.forEach((review) => {
+        totalReviewsAdded += review.rating;
+      });
+
       return {
         ...product,
         user: adminUser,
+        reviews: product.reviews.map((review) => ({
+          ...review,
+          user: adminUser,
+        })),
+        numReviews: product.reviews.length,
+        avgRating: totalReviewsAdded / product.reviews.length,
       };
     });
 
