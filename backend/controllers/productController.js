@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Product from "../models/productModel.js";
+import moment from "moment";
 
 // @desc    Fetch All Products
 // @route   GET /api/products
@@ -103,7 +104,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 // @access  Private
 const createProductReview = asyncHandler(async (req, res) => {
   const { rating, description } = req.body;
-
+ 
   const product = await Product.findById(req.params.id);
 
   if (product) {
@@ -113,9 +114,9 @@ const createProductReview = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("Product already reviewed");
     }
-    //reviews.8.profileImg: Path `profileImg` is required., reviews.8.date: Path `date` is required
-    const profileImg = "1";
-    const date = Date.now();
+    
+    const profileImg = "https://i.etsystatic.com/iusa/3e53e6/31424562/iusa_75x75.31424562_ccoa.jpg?version=0";
+    const date = moment().format("D MMM, YYYY");
 
     const review = {
       name: req.user.name,
