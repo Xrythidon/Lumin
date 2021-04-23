@@ -293,7 +293,6 @@ const reviewParserById = asyncHandler(async (req, res) => {
 const getAllReviewsByListingId = (req, response) => {
   const reviews = [];
   const listing_id = req.params.id;
-  let noMoreReviewsLeft = false;
 
   const c = new Crawler({
     jQuery: jsdom,
@@ -304,7 +303,10 @@ const getAllReviewsByListingId = (req, response) => {
         console.log(error);
       } else {
         const dom = new JSDOM(res.body.toString()).window.document;
-        if (res.body.toString()) {
+        let isProductReviews = dom.querySelector("#same-listing-reviews-tab > span") ? Number(dom.querySelector("#same-listing-reviews-tab > span").textContent.trim()) : false;
+        console.log(isProductReviews);
+        isProductReviews = isProductReviews < 3 ? 0 : isProductReviews;
+        if (res.body.toString() && isProductReviews) {
           console.log("PAGE: ", res.request.uri.query);
           const elements = dom.querySelectorAll("div[data-reviews] div.wt-grid__item-xs-12");
           elements.forEach((element) => {
@@ -318,12 +320,11 @@ const getAllReviewsByListingId = (req, response) => {
               ? element.querySelector(".wt-text-body-01 p").textContent.trim()
               : "";
             review.profileImg = element.querySelector("img").getAttribute("src");
-            console.log(review);
+           console.log(review);
             reviews.push(review);
           });
         } else {
           console.log("INSIDE ELSE");
-        //  noMoreReviewsLeft = true;
           response.json(reviews);
           return;
         }
@@ -337,18 +338,13 @@ const getAllReviewsByListingId = (req, response) => {
     const reviewUrl = `http://localhost:5000/api/scrape/parseReviews/${listing_id}?page=${page}`;
     c.queue({
       uri: reviewUrl,
-    });
-    console.log(page);
+    });;
   }
   // RINGER SIZER ETSY BUG, REVIEWS ARE DUPLICATED AFTER THE TOTAL AMOUNT OF REVIEWS EXCEEDED
 
-//   c.on("drain", function () {
-//     // For example, release a connection to database.
-//     console.log("INSIDE DRAIN");
-//  //   if(noMoreReviewsLeft) {
-//  //     response.json(reviews);
-//   //  }
-//   });
+  c.on("drain", function () {
+     response.json(reviews);
+  });
 };
 
 export { scrapeAllProducts, testScrape, testCrawler, reviewParserById, getAllReviewsByListingId, getAllEtsyProducts };
