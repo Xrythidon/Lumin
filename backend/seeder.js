@@ -36,6 +36,7 @@ const importData = async () => {
         countInStock: Math.floor(Math.random()*10 + 5),
         reviews: product.reviews.map((review) => ({
           ...review,
+          rating: Number(review.rating),
           user: adminUser,
         })),
         numReviews: product.reviews.length,

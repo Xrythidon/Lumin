@@ -4,7 +4,7 @@ const reviewSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
     date: { type: String, required: true },
-    rating: { type: String, required: true },
+    rating: { type: Number, required: true },
     description: { type: String, required: false },
     profileImg: { type: String, required: true },
     user: {
@@ -17,6 +17,34 @@ const reviewSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+// // Static method to get avg of review ratings
+// reviewSchema.statics.getAverageRating = async function (productId) {
+//   console.log("Calculating avg review...");
+
+//   const obj = await this.aggregate([
+//     {
+//       $match: { product: productId },
+//     },
+//     {
+//       $group: {
+//         _id: "$product",
+//         avgRating: { $avg: "$rating" },
+//       },
+//     },
+//   ]);
+
+//   console.log(obj);
+// };
+
+// //
+// reviewSchema.post("save", function () {
+//   this.constructor.getAverageRating(this.product);
+// });
+
+// reviewSchema.pre("remove", function () {
+//   this.constructor.getAverageRating(this.product);
+// });
 
 const productSchema = mongoose.Schema(
   {

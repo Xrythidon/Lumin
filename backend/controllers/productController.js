@@ -102,7 +102,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products/:id/reviews
 // @access  Private
 const createProductReview = asyncHandler(async (req, res) => {
-  const { rating, comment } = req.body;
+  const { rating, description } = req.body;
 
   const product = await Product.findById(req.params.id);
 
@@ -113,11 +113,16 @@ const createProductReview = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("Product already reviewed");
     }
+    //reviews.8.profileImg: Path `profileImg` is required., reviews.8.date: Path `date` is required
+    const profileImg = "1";
+    const date = Date.now();
 
     const review = {
       name: req.user.name,
       rating: Number(rating),
-      comment,
+      description,
+      profileImg,
+      date,
       user: req.user._id,
     };
 
@@ -125,7 +130,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 
     product.numReviews = product.reviews.length;
 
-    product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+    product.avgRating = product.reviews.reduce((acc, review) => review.rating + acc, 0) / product.reviews.length;
 
     await product.save();
     res.status(201).json({ message: "Reviewed added" });
