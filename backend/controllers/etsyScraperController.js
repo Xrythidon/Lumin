@@ -64,14 +64,14 @@ const crawlHelper = (fn) => {
 const testScrape = (req, mainRes) => {
   axios.get("http://localhost:5000/api/scrape/getAllEtsyProducts").then((response) => {
     let elements = response.data;
-    // elements = [elements[0], elements[1]];
-
+    elements = [elements[0], elements[1]];
     const products = [];
     //(?:"category": )"(.*?)"
     const c = new Crawler({
       jQuery: jsdom,
       rateLimit: 2000,
       maxConnections: 1,
+      
       callback: function (error, res, done) {
         if (error) {
           console.log(error);
@@ -134,7 +134,7 @@ const testScrape = (req, mainRes) => {
             .then((response) => {
               product.reviews = response.data;
               console.log(product);
-              console.log(res.options.index);
+              console.log(res.options.index, "Product Index");
               products.push(product);
               if (res.options.index === elements.length - 1) {
                 // last index then res.json

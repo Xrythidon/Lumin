@@ -27,20 +27,22 @@ const importData = async () => {
       let totalReviewsAdded = 0;
 
       product.reviews.forEach((review) => {
-        totalReviewsAdded += Number(review.rating);
+        if (review.rating) {
+          totalReviewsAdded += Number(review.rating);
+        }
       });
 
       return {
         ...product,
         user: adminUser,
-        countInStock: Math.floor(Math.random()*10 + 5),
+        countInStock: Math.floor(Math.random() * 10 + 5),
         reviews: product.reviews.map((review) => ({
           ...review,
           rating: Number(review.rating),
           user: adminUser,
         })),
         numReviews: Number(product.reviews.length),
-        avgRating: Number(totalReviewsAdded / Number(product.reviews.length)),
+        avgRating: product.reviews.length !== 0 ? Number(totalReviewsAdded / Number(product.reviews.length)) : 0,
       };
     });
 
