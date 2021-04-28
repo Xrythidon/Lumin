@@ -1,9 +1,36 @@
+
+
+@font-face {
+  font-family: "Transat";
+  src: url("../fonts/transat_standard-webfont.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Transat";
+  src: url("../fonts/transat_light-webfont.woff2") format("woff2");
+  font-weight: lighter;
+}
+
+@font-face {
+  font-family: "Transat";
+  src: url("../fonts/transat_medium-webfont.woff2") format("woff2");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "Transat";
+  src: url("../fonts/transat_bold-webfont.woff2") format("woff2");
+  font-weight: bolder;
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: "Transat", Helvetica Neue, sans-serif;
+  font-weight: lighter;
 }
 
 a {

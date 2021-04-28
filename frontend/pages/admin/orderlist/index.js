@@ -1,5 +1,5 @@
 import React from 'react'
-import OrderListScreen from "../../../screens/OrderListScreen";
+import OrderListScreen from "../../../screens/AdminPanel/OrderListScreen";
 
 const OrderList = () => {
     return (

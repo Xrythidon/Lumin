@@ -4,10 +4,10 @@ import Link from "next/link";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import Message from "../components/Message";
-import Loader from "../components/Loader";
-import FormContainer from "../components/FormContainer";
-import { listProductDetails, updateProduct, updateProductReset } from "../redux/actions/product";
+import Message from "../../components/Message";
+import Loader from "../../components/Loader";
+import FormContainer from "../../components/FormContainer";
+import { listProductDetails, updateProduct, updateProductReset } from "../../redux/actions/product";
 
 const ProductEditScreen = ({ id }) => {
   const [name, setName] = useState("");

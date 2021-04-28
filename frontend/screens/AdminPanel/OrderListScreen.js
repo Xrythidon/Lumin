@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Table, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import Message from "../components/Message";
-import Loader from "../components/Loader";
-import { listOrders } from "../redux/actions/order";
+import Message from "../../components/Message";
+import Loader from "../../components/Loader";
+import { listOrders } from "../../redux/actions/order";
 
 const OrderListScreen = () => {
   const dispatch = useDispatch();

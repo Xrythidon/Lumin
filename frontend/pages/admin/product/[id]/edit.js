@@ -1,5 +1,5 @@
 import React from 'react'
-import ProductEditScreen from "../../../../screens/ProductEditScreen";
+import ProductEditScreen from "../../../../screens/AdminPanel/ProductEditScreen";
 
 const ProductEdit = ({id}) => {
     return (

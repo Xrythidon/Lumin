@@ -1,5 +1,5 @@
 import React from 'react'
-import UserListScreen from "../../../screens/UserListScreen";
+import UserListScreen from "../../../screens/AdminPanel/UserListScreen";
 
 const UserList = () => {
     return (

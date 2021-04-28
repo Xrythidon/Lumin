@@ -3,16 +3,16 @@ import Link from "next/link";
 import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import Message from "../components/Message";
-import Loader from "../components/Loader";
-import Paginate from "../components/Paginate";
+import Message from "../../components/Message";
+import Loader from "../../components/Loader";
+import Paginate from "../../components/Paginate";
 import {
   deleteProduct,
   deleteProductReset,
   listProducts,
   createProduct,
   createProductReset,
-} from "../redux/actions/product";
+} from "../../redux/actions/product";
 
 const ProductListScreen = ({pageNumber, keyword}) => {
 

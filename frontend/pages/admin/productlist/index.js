@@ -1,5 +1,5 @@
 import React from 'react'
-import ProductListScreen from "../../../screens/ProductListScreen";
+import ProductListScreen from "../../../screens/AdminPanel/ProductListScreen";
 
 const ProductList = ({keyword, pageNumber}) => {
     console.log(pageNumber);

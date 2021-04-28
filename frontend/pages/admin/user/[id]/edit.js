@@ -1,5 +1,5 @@
 import React from 'react'
-import UserEditScreen from "../../../../screens/UserEditScreen";
+import UserEditScreen from "../../../../screens/AdminPanel/UserEditScreen";
 
 const UserEdit = ({id}) => {
     return (
