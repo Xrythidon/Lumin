@@ -1,5 +1,5 @@
-import "../styles/globals.css";
-import "../styles/bootstrap.min.css";
+//import "../styles/globals.scss";
+//import "../styles/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/js/all.js";
 
 import { Provider } from "react-redux";
@@ -10,17 +10,21 @@ import dynamic from "next/dynamic";
 import Footer from "../components/Footer";
 import Meta from "../components/Meta";
 
+// Styles
+import GlobalStyle from '../styles/globalStyles';
+
 const Header = dynamic(() => import("../components/Header"));
 
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
+      <GlobalStyle />
       <Meta />
-      {typeof window !== "undefined" && <Header />}
       <Component {...pageProps} />
       <Footer />
     </Provider>
   );
 }
+//       {typeof window !== "undefined" && <Header />} <- Header Prop removed for now
 
 export default MyApp;
