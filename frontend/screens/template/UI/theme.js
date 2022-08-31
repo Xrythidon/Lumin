@@ -3,12 +3,12 @@ import { ThemeProvider } from "styled-components";
 
 const theme = {
   colors: {
-    powderWhite: "#FFFDF9",
-    persianGreen: "#06B49A",
-    lightBlue: "#AFDBD2",
-    onyx: "#36313D",
+    bg: "#FFFFFF",
+    text: "#dac6bb",
+    one: "#e6c2a1",
+    two: "#f6f4f3",
   },
-  fonts: ["Futura", "Caslon"],
+  fonts: ["Source Serif Pro", "Source Sans Pro"],
   fontSizes: {
     small: "1em",
     medium: "2em",
